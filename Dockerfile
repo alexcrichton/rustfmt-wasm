@@ -33,10 +33,26 @@ RUN curl -L https://crates.io/api/v1/crates/isatty/0.1.8/download | tar xzf -
 RUN curl -L https://crates.io/api/v1/crates/rustc-ap-rustc_data_structures/237.0.0/download | tar xzf -
 RUN curl -L https://crates.io/api/v1/crates/rustc-ap-rustc_errors/237.0.0/download | tar xzf -
 RUN curl -L https://crates.io/api/v1/crates/rustfmt-nightly/0.99.4/download | tar xzf -
-COPY . /app/src
+COPY Cargo.toml *.patch /app/src/
+COPY src /app/src/src
 RUN cd isatty-0.1.8 && patch -Np1 < /app/src/isatty.patch
 RUN cd rustc-ap-rustc_data_structures-237.0.0 && patch -Np1 < /app/src/rustc-data-structures.patch
 RUN cd rustc-ap-rustc_errors-237.0.0 && patch -Np1 < /app/src/rustc_errors.patch
 RUN cd rustfmt-nightly-0.99.4 && patch -Np1 < /app/src/rustfmt.patch
 WORKDIR /app/src
 RUN cargo build --target wasm32-unknown-unknown --release
+
+RUN mkdir /dist
+RUN curl -L https://github.com/rustwasm/wasm-bindgen/releases/download/0.2.21/wasm-bindgen-0.2.21-x86_64-unknown-linux-musl.tar.gz | tar xzf -
+RUN wasm-bindgen-0.2.21-x86_64-unknown-linux-musl/wasm-bindgen \
+  target/wasm32-unknown-unknown/release/wasm_rustfmt.wasm \
+  --no-modules \
+  --out-dir /dist
+
+FROM ubuntu:18.04
+
+COPY --from=rust /dist /app
+COPY index.html /app
+COPY --from=binaryen /binaryen/bin/wasm-opt /usr/local/bin
+RUN wasm-opt -Os -g /app/wasm_rustfmt_bg.wasm -o /app/wasm_rustfmt_bg.opt.wasm
+RUN mv /app/wasm_rustfmt_bg.opt.wasm /app/wasm_rustfmt_bg.wasm
