@@ -12,7 +12,6 @@ console_error_panic_hook = "0.1"
 crate-type = ["cdylib"]
 
 [patch.crates-io]
-isatty = { path = '../isatty-0.1.8' }
 rustc-ap-rustc_data_structures = { path = '../rustc-ap-rustc_data_structures-237.0.0/' }
 rustc-ap-rustc_errors = { path = '../rustc-ap-rustc_errors-237.0.0/' }
 rustfmt-nightly = { path = '../rustfmt-nightly-0.99.4' }

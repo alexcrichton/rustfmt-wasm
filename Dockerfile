@@ -29,13 +29,11 @@ ENV PATH=$PATH:/root/.cargo/bin
 RUN rustup target add wasm32-unknown-unknown
 
 WORKDIR /app
-RUN curl -L https://crates.io/api/v1/crates/isatty/0.1.8/download | tar xzf -
 RUN curl -L https://crates.io/api/v1/crates/rustc-ap-rustc_data_structures/237.0.0/download | tar xzf -
 RUN curl -L https://crates.io/api/v1/crates/rustc-ap-rustc_errors/237.0.0/download | tar xzf -
 RUN curl -L https://crates.io/api/v1/crates/rustfmt-nightly/0.99.4/download | tar xzf -
 COPY Cargo.toml *.patch /app/src/
 COPY src /app/src/src
-RUN cd isatty-0.1.8 && patch -Np1 < /app/src/isatty.patch
 RUN cd rustc-ap-rustc_data_structures-237.0.0 && patch -Np1 < /app/src/rustc-data-structures.patch
 RUN cd rustc-ap-rustc_errors-237.0.0 && patch -Np1 < /app/src/rustc_errors.patch
 RUN cd rustfmt-nightly-0.99.4 && patch -Np1 < /app/src/rustfmt.patch
