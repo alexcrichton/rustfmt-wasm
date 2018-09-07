@@ -1,0 +1,21 @@
+[package]
+name = "wasm-rustfmt"
+version = "0.1.0"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+
+[dependencies]
+wasm-bindgen = "=0.2.21"
+rustfmt-nightly = "=0.99.4"
+console_error_panic_hook = "0.1"
+
+[lib]
+crate-type = ["cdylib"]
+
+[patch.crates-io]
+isatty = { path = '../isatty-0.1.8' }
+rustc-ap-rustc_data_structures = { path = '../rustc-ap-rustc_data_structures-237.0.0/' }
+rustc-ap-rustc_errors = { path = '../rustc-ap-rustc_errors-237.0.0/' }
+rustfmt-nightly = { path = '../rustfmt-nightly-0.99.4' }
+
+[profile.release]
+lto = true

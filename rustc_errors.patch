@@ -1,0 +1,13 @@
+diff --git a/lock.rs b/lock.rs
+index dff8d53..9b75af6 100644
+--- a/lock.rs
++++ b/lock.rs
+@@ -109,7 +109,7 @@ pub fn acquire_global_lock(name: &str) -> Box<dyn Any> {
+     }
+ }
+ 
+-#[cfg(unix)]
++#[cfg(not(windows))]
+ pub fn acquire_global_lock(_name: &str) -> Box<dyn Any> {
+     Box::new(())
+ }

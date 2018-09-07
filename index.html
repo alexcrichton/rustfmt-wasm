@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <style>
+      body {
+        text-align: center;
+      }
+      #go {
+        display: block;
+        margin: 0 auto;
+      }
+      #text {
+        width: 50%;
+        height: 80%;
+      }
+      #diagnostics {
+        color: red;
+        background: #ffe8e8;
+        border: 2px solid #891c1c;
+        width: 50%;
+        padding: 10px;
+        margin: 10px auto;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <button autocomplete=off disabled id='go'>Loading rustfmt...</button>
+    <textarea id='text'>
+    </textarea>
+    <div id='diagnostics'></div>
+    <script>
+      delete WebAssembly.instantiateStreaming;
+    </script>
+    <script src='dist/lol.js'></script>
+    <script>
+      const text = document.getElementById('text');
+      const button = document.getElementById('go');
+      const diagnostics = document.getElementById('diagnostics');
+      button.onclick = () => {
+        if (button.disabled)
+          return;
+        const result = wasm_bindgen.rustfmt(text.value);
+        const err = result.error();
+        if (err) {
+          diagnostics.innerText = err;
+          diagnostics.style.display = 'block';
+        } else {
+          text.value = result.code();
+        }
+        result.free();
+      };
+      text.onkeypress = () => {
+        diagnostics.style.display = 'none';
+      };
+      wasm_bindgen('dist/lol_bg.wasm').then(() => {
+        button.disabled = false;
+        button.innerText = 'rustfmt';
+      });
+    </script>
+  </body>
+</html>
