@@ -1,0 +1,17 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker build --tag final .
+  - docker cp $(docker create final):/app .
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: false
+  local-dir: app
+  on:
+    branch: master
